@@ -1,0 +1,188 @@
+/* --- LOGIN PAGE STYLES --- */
+body.login-page {
+    background: url('../bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+.login-container {
+    text-align: center;
+    z-index: 10;
+    padding: 20px;
+}
+
+.login-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 5em;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 0, 0, 0.3);
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+.login-subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5em;
+    color: #e0e0e0;
+    margin-top: 0;
+    margin-bottom: 40px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.login-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.steampunk-btn {
+    background: url('../sign.png') no-repeat center center;
+    background-size: 140% 140%;
+    border: none;
+    width: 200px;
+    height: 80px;
+    color: #2b1d0e;
+    font-family: 'Rye', serif;
+    font-size: 1.2em;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+    box-shadow: none;
+    padding: 0;
+
+}
+
+.steampunk-btn:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.steampunk-btn:active {
+    transform: scale(0.95);
+    filter: brightness(0.9);
+}
+
+/* --- Steampunk Inputs --- */
+.steampunk-input {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto 15px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px solid #9f8a66;
+    border-radius: 5px;
+    color: #e0e0e0;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1em;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.steampunk-input:focus {
+    outline: none;
+    border-color: #b88a44;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 10px rgba(184, 138, 68, 0.5);
+}
+
+/* --- Login Form Layout Fix --- */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.login-form .login-buttons {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* --- RESPONSIVE LOGIN STYLES --- */
+@media screen and (max-width: 768px) {
+    body.login-page {
+        background-attachment: scroll;
+        /* Fix for mobile browsers */
+        background-position: center center;
+        background-size: cover;
+        /* Ensure it covers */
+        height: 100%;
+        /* Allow scrolling if needed */
+        min-height: 100vh;
+    }
+
+    .login-title {
+        font-size: 3em;
+        /* Smaller title on mobile */
+    }
+
+    .login-subtitle {
+        font-size: 1.2em;
+        margin-bottom: 30px;
+    }
+
+    .login-buttons {
+        flex-direction: column;
+        /* Stack buttons vertically */
+        gap: 20px;
+        width: 100%;
+        max-width: 300px;
+        /* Limit width of stacked buttons */
+        margin: 0 auto;
+    }
+
+    .steampunk-btn {
+        width: 100%;
+        /* Full width buttons */
+        padding: 15px 20px;
+        font-size: 1em;
+    }
+
+    /* Fix for Clock Card Overflow */
+    .clock-display {
+        font-size: 2.5em;
+        /* Reduce from 3.5em */
+    }
+
+    /* Fix Sidebar Mobile Layout */
+    #side {
+        position: fixed;
+        bottom: 0;
+        z-index: 1000;
+        width: 100%;
+        height: auto;
+        top: auto;
+        right: 0;
+        left: 0;
+        margin-top: 0;
+        background: #2a1a1a;
+        border-top: 2px solid #9f8a66;
+        display: flex;
+        flex-direction: column-reverse;
+        padding: 5px;
+    }
+
+    #side a.avatar {
+        display: none;
+    }
+
+    #side .description {
+        display: none !important;
+    }
+}
