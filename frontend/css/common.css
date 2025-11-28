@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css?family=Lobster');
+@import url('https://fonts.googleapis.com/css2?family=Rye&display=swap');
+/* Extra Steampunk Font */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+/* Elegant Header Font */
+
+body {
+    background: url('../bg_home.png') fixed center top;
+    color: #000000;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    word-wrap: break-word;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#page-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: #530b0b url('../bg.jpg') fixed center top;
+    background-size: cover;
+    transition: filter 0.3s ease-in-out;
+}
+
+#page-background.blurred {
+    filter: blur(4px);
+}
+
+img {
+    max-width: 100%;
+    border: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #8c0000;
+}
+
+a:hover {
+    text-decoration: none;
+    color: rgba(140, 0, 0, 0.6);
+}
+
+h1 {
+    font: normal 32px 'Lobster';
+    margin: 0 0 10px;
+}
+
+ol {
+    list-style-type: upper-roman;
+    margin: 3px 0 3px -15px;
+}
+
+ul {
+    margin: 3px 0 3px -15px;
+}
+
+blockquote {
+    margin: -8px 0 0 10px;
+    padding: 0 0 0 10px;
+    border-left: solid 1px #000000;
+}
+
+.clear {
+    clear: both;
+}
+
+/* Utility Classes for SPA */
+.hidden {
+    display: none !important;
+}
