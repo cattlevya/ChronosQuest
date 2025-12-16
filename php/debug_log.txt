@@ -1,0 +1,14 @@
+RAW: 
+RAW: {"user_id":"21","class_type":"BCF"}
+RAW: {"user_id":"22","class_type":"BCF"}
+RAW: {"user_id":"24","class_type":"CMS"}
+RAW: {"user_id":"26","class_type":"BRASSGUARD"}
+RAW: {"user_id":"3","class_type":"COPPERCORE"}
+RAW: {"user_id":"4","class_type":"COPPERCORE"}
+RAW: {"user_id":"6","class_type":"BRASSGUARD"}
+RAW: {"user_id":"5","class_type":"COPPERCORE"}
+RAW: {"user_id":"7","class_type":"COPPERCORE"}
+RAW: {"user_id":"7","class_type":"COPPERCORE"}
+RAW: {"user_id":"8","class_type":"C"}
+RAW: {"user_id":"9","class_type":"C"}
+RAW: {"user_id":"10","class_type":"A"}
