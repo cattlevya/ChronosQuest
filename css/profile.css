@@ -1,0 +1,257 @@
+/* Profile Page Styles - PEMWEBEUY Design Adapted */
+
+/* REMOVED @font-face for Steampunk font as file is missing. Using Cinzel/Rye as fallback */
+
+:root {
+    --bg-color: #0f2e35;
+    --text-gold: #e6dcc5;
+    --parchment-bg: #cab384;
+}
+
+body {
+    background-color: var(--bg-color);
+    background-image: url('../assets/bg_home.png');
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Main Container */
+.profile-container {
+    width: 95%;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: absolute;
+    top: 43%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+}
+
+/* --- LEFT COLUMN: GEAR AVATAR --- */
+.profile-left {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatar-wrapper {
+    position: relative;
+    width: 600px;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gear-frame {
+    position: absolute;
+    width: 1000px;
+    height: 1000px;
+    background-image: url('../assets/gear_home.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.avatar-img {
+    width: 390px;
+    height: 390px;
+    border-radius: 50%;
+    object-fit: cover;
+    z-index: 100;
+    position: absolute;
+    top: 50.3%;
+    left: 50.3%;
+    transform: translate(-50%, -50%);
+    border: none;
+    box-shadow: none;
+    background-color: #2b1d0e;
+}
+
+/* --- RIGHT COLUMN: INFO & STATS --- */
+.profile-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.user-info {
+    text-align: left;
+    color: var(--text-gold);
+    font-family: 'Playfair Display', serif;
+}
+
+.user-info h1 {
+    font-size: 4.5em;
+    /* Creating a fallback for the missing Steampunk font */
+    font-family: 'Rye', 'Cinzel', serif;
+    font-style: normal;
+    text-transform: uppercase;
+    margin: 0 0 10px 0;
+    line-height: 1;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.user-info h2,
+.user-info h3,
+.user-info h4 {
+    font-size: 2.3em;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 600;
+    margin: 5px 0;
+    color: #e6dcc5;
+}
+
+/* --- STATS GRID --- */
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+.stat-card {
+    background-color: #e6dcc5;
+    background-image: url('../assets/texture_carrd.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    border: 3px solid #0f2e35;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+    padding: 45px 20px 10px 20px;
+    text-align: center;
+    position: relative;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: visible;
+}
+
+/* Inner Border */
+.stat-card::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    border: 2px solid #0f2e35;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.stat-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.5em;
+    color: #0f2e35;
+    margin: 0 0 -15px 0;
+    z-index: 5;
+    position: relative;
+}
+
+.stat-card .value {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 7em;
+    color: #0f2e35;
+    margin: 0;
+    font-weight: bold;
+    line-height: 0.9;
+    position: relative;
+    z-index: 5;
+}
+
+/* Bolts for Stat Cards */
+.card-bolt {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: #4a3c31;
+    border-radius: 50%;
+    z-index: 20;
+    box-shadow: none;
+    border: none;
+}
+
+.tl {
+    top: 10px;
+    left: 10px;
+}
+
+.tr {
+    top: 10px;
+    right: 10px;
+}
+
+.bl {
+    bottom: 10px;
+    left: 10px;
+}
+
+.br {
+    bottom: 10px;
+    right: 10px;
+}
+
+/* --- NAVBAR STYLES (MATCH BUTTONS) as fallback if navbar.js doesn't load/style --- */
+/* (Added for safety, but main nav handled by navbar.js / or manual html) */
+
+/* Responsive */
+@media (max-width: 1000px) {
+    .profile-container {
+        flex-direction: column;
+        top: 0;
+        transform: translate(-50%, 0);
+        margin-top: 50px;
+        text-align: center;
+        position: relative;
+        left: 50%;
+    }
+
+    .profile-right {
+        width: 100%;
+        align-items: center;
+    }
+
+    .user-info {
+        text-align: center;
+    }
+
+    .avatar-wrapper {
+        width: 300px;
+        height: 300px;
+    }
+
+    .avatar-img {
+        width: 180px;
+        height: 180px;
+    }
+
+    .gear-frame {
+        width: 500px;
+        height: 500px;
+    }
+}
