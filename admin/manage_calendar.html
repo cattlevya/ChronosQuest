@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Kelola Event - Chronos Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-page">
+
+    <div class="sidebar">
+        <div class="sidebar-header"><h2>Chronos<br>Control</h2></div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">🏠 Dashboard</a></li>
+            <li><a href="manage_materi.html">📚 Kelola Materi</a></li>
+            <li><a href="manage_quest.html">⚔️ Kelola Quest</a></li>
+            <li><a href="manage_users.html">👥 Data Siswa</a></li>
+            <li><a href="manage_schedule.html">📅 Kelola Jadwal</a></li>
+            <li class="active"><a href="manage_calendar.html">📆 Kelola Event</a></li>
+            <li><a href="#" onclick="sessionStorage.clear(); window.location.href='../login.html'">🚪 Logout</a></li>
+        </ul>
+        <div class="gear-decoration"><img src="../assets/gear_1.png" class="spin"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h1>Manajemen Event Kalender</h1>
+            <div class="admin-info">Admin Mode</div>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn-add" onclick="openModal()">+ Tambah Event Global</button>
+        </div>
+
+        <div class="panel-table">
+            <table class="steampunk-table">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Nama Event</th>
+                        <th>Tipe</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="eventTableBody">
+                    <tr><td colspan="4" align="center">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle" style="font-family:'Cinzel',serif; text-align:center; margin-bottom:20px;">Input Event</h2>
+            
+            <form id="eventForm" onsubmit="submitEvent(event)">
+                <input type="hidden" id="eventId">
+
+                <div class="form-group">
+                    <label>Nama Event</label>
+                    <input type="text" id="title" required placeholder="Contoh: Ujian Akhir">
+                </div>
+                <div class="form-group">
+                    <label>Tanggal</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipe Event</label>
+                    <select id="type">
+                        <option value="event">Acara Biasa</option>
+                        <option value="deadline">Deadline Tugas</option>
+                        <option value="holiday">Hari Libur</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit">SIMPAN EVENT</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let allEvents = [];
+
+        document.addEventListener('DOMContentLoaded', loadEvents);
+
+        async function loadEvents() {
+            const tbody = document.getElementById('eventTableBody');
+            try {
+                const res = await fetch('../php/admin_calendar.php');
+                const result = await res.json();
+                
+                if(result.success) {
+                    allEvents = result.data;
+                    if(result.data.length > 0) {
+                        tbody.innerHTML = result.data.map((item, index) => `
+                            <tr>
+                                <td style="color:#ffcc00; font-weight:bold;">${item.event_date}</td>
+                                <td>${item.title}</td>
+                                <td><span class="badge-class" style="background:#5a4a42">${item.type}</span></td>
+                                <td>
+                                    <button class="btn-small" style="background:#2e8b57; color:white;" onclick="openEditModal(${index})">Edit</button>
+                                    <button class="btn-small btn-delete" onclick="deleteEvent(${item.id})">Hapus</button>
+                                </td>
+                            </tr>
+                        `).join('');
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="4" align="center">Belum ada event.</td></tr>';
+                    }
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function submitEvent(e) {
+            e.preventDefault();
+            const payload = {
+                id: document.getElementById('eventId').value,
+                title: document.getElementById('title').value,
+                date: document.getElementById('date').value,
+                type: document.getElementById('type').value
+            };
+
+            try {
+                const res = await fetch('../php/admin_calendar.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if(result.success) {
+                    alert(result.message);
+                    closeModal();
+                    loadEvents();
+                } else { alert("Gagal: " + result.message); }
+            } catch(err) { console.error(err); }
+        }
+
+        async function deleteEvent(id) {
+            if(!confirm("Hapus event ini?")) return;
+            try {
+                const res = await fetch('../php/admin_calendar.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ action: 'delete', id: id })
+                });
+                const result = await res.json();
+                if(result.success) loadEvents();
+            } catch(err) { console.error(err); }
+        }
+
+        function openModal() { 
+            document.getElementById('eventForm').reset();
+            document.getElementById('eventId').value = "";
+            document.getElementById('modalTitle').innerText = "Tambah Event";
+            document.getElementById('eventModal').style.display = 'flex'; 
+        }
+
+        function openEditModal(index) {
+            const item = allEvents[index];
+            document.getElementById('eventId').value = item.id;
+            document.getElementById('title').value = item.title;
+            document.getElementById('date').value = item.event_date;
+            document.getElementById('type').value = item.type;
+
+            document.getElementById('modalTitle').innerText = "Edit Event";
+            document.getElementById('eventModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('eventModal').style.display = 'none'; }
+    </script>
+</body>
+</html>

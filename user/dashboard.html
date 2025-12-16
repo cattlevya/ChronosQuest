@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dashboard - ChronosQuest</title>
+
+    <!-- Fonts (ke bagian yang sudah digunakan di css) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Gunakan stylesheet yang sudah ada (tetap seperti sebelumnya) -->
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body class="dashboard-page">
+    <a href="#" class="logout-btn" id="logoutBtn">Logout</a>
+
+    <!-- HERO HEADER (meniru layout PEMWEBEUY/dashboard.html) -->
+    <div class="hero-header"
+        style="position: relative; width: 100%; min-height: 360px; overflow: hidden; margin-bottom: 20px;">
+        <img src="../assets/bashboard.png" alt="Dashboard Header" class="header-bg"
+            style="width:100%; height:100%; object-fit:cover; object-position:center top;">
+        <div class="header-overlay"
+            style="position:absolute; top:11%; left:50%; transform:translate(-50%,-50%); text-align:center; width:100%; max-width:60%; display:flex; flex-direction:column; align-items:center; z-index:100;">
+            <h2 class="user-greeting"
+                style="font-family:'Playfair Display', serif; font-style:italic; font-size:4em; color:#e6dcc5; margin:0 0 18px 0;">
+                Hai, <span id="greetingName">User</span></h2>
+            <h1 class="welcome-text"
+                style="font-family:'Steampunk', serif; font-size:7em; color:#e6dcc5; margin:0; line-height:0.95; letter-spacing:4px; text-transform:uppercase;">
+                WELCOME TO<br><span id="userClass">-</span></h1>
+        </div>
+    </div>
+
+    <!-- Scrolling Gear (Left Only) - PEMWEBEUY Style -->
+    <img src="../assets/gear_home.png" alt="Steampunk Gear" class="scroll-gear gear-left">
+    <img src="../assets/gear_home.png" alt="Steampunk Gear Small" class="scroll-gear gear-left-small">
+
+    <div class="main-wrapper">
+
+        <!-- HEADER PANEL (stat boxes) -->
+        <div class="panel header-panel">
+            <div class="bolts"><span></span><span></span><span></span><span></span></div>
+
+            <div class="header-left">
+                <h1 class="greeting" id="greetingNameDuplicate" style="display:none;">Hai, User</h1>
+                <!-- duplicate hidden - keep legacy -->
+                <div class="stats-row">
+                    <div class="stat-box parchment-box">
+                        <div class="frame-overlay">
+                            <div class="frame-part frame-top"></div>
+                            <div class="frame-part frame-bottom"></div>
+                            <div class="frame-part frame-side-left"></div>
+                            <div class="frame-part frame-side-right"></div>
+                        </div>
+                        <div class="bolts"><span></span><span></span><span></span><span></span></div>
+                        <div class="content-center">
+                            <span class="lbl">Level anda</span>
+                            <span class="val" id="userLevel">-</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-box parchment-box">
+                        <div class="frame-overlay">
+                            <div class="frame-part frame-top"></div>
+                            <div class="frame-part frame-bottom"></div>
+                            <div class="frame-part frame-side-left"></div>
+                            <div class="frame-part frame-side-right"></div>
+                        </div>
+                        <div class="bolts"><span></span><span></span><span></span><span></span></div>
+                        <div class="content-center">
+                            <span class="lbl">Jumlah poin</span>
+                            <span class="val" id="userPoints">-</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-box parchment-box">
+                        <div class="frame-overlay">
+                            <div class="frame-part frame-top"></div>
+                            <div class="frame-part frame-bottom"></div>
+                            <div class="frame-part frame-side-left"></div>
+                            <div class="frame-part frame-side-right"></div>
+                        </div>
+                        <div class="bolts"><span></span><span></span><span></span><span></span></div>
+                        <div class="content-center">
+                            <span class="lbl">Total Quest</span>
+                            <span class="val" id="totalQuest">20</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MIDDLE GRID (clock, todo, calendar) -->
+        <div class="middle-section">
+            <div class="col-left">
+                <div class="panel clock-panel parchment-box">
+                    <div class="bolts"><span></span><span></span><span></span><span></span></div>
+                    <div class="digital-clock" id="clock">00:00</div>
+                    <div class="date-text" id="date">...</div>
+                </div>
+
+                <div class="panel todo-panel parchment-box">
+                    <div class="bolts"><span></span><span></span><span></span><span></span></div>
+
+                    <div class="fancy-title">
+                        <h3>To Do List</h3>
+                        <div class="fancy-line"></div>
+                    </div>
+
+                    <div class="todo-input-wrapper">
+                        <input type="text" id="newTaskInput" class="steampunk-input-small"
+                            placeholder="Tambah tugas...">
+                        <button class="btn-add-task" onclick="addTodo()">+</button>
+                    </div>
+
+                    <ul class="task-list" id="todoListContainer">
+                        <li style="text-align:center; list-style:none; opacity:0.6;">Memuat...</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-right">
+                <div class="panel calendar-panel parchment-box">
+                    <div class="bolts"><span></span><span></span><span></span><span></span></div>
+
+                    <div class="fancy-title">
+                        <h3>Kalender</h3>
+                        <div class="fancy-line"></div>
+                    </div>
+
+                    <div class="calendar-inner-box">
+                        <div class="cal-month" id="calMonth">...</div>
+                        <table class="cal-grid" role="grid">
+                            <thead>
+                                <tr>
+                                    <th>Sn</th>
+                                    <th>Sl</th>
+                                    <th>Rb</th>
+                                    <th>Km</th>
+                                    <th>Jm</th>
+                                    <th>Sb</th>
+                                    <th>Mg</th>
+                                </tr>
+                            </thead>
+                            <tbody id="calBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="calendar-slots" id="upcomingEventsContainer"
+                        style="margin-top:12px; max-height:80px; overflow-y:auto; position:relative; z-index:1;">
+                        <div class="slot-pill">
+                            <div class="dot"></div> Memuat...
+                        </div>
+                        <div class="slot-pill">
+                            <div class="dot"></div> Memuat...
+                        </div>
+                    </div>
+
+                    <!-- FORM TAMBAH EVENT KALENDER -->
+                    <div class="calendar-add-form"
+                        style="margin-top:15px; padding-top:10px; border-top:1px dashed #a89970; position:relative; z-index:200;">
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; position:relative; z-index:201;">
+                            <input type="text" id="eventTitle" placeholder="Judul event..."
+                                style="flex:1; min-width:100px; padding:6px 10px; border:1px solid #a89970; border-radius:4px; background:#f6ecd6; font-family:inherit;">
+                            <input type="date" id="eventDate"
+                                style="padding:6px 10px; border:1px solid #a89970; border-radius:4px; background:#f6ecd6; font-family:inherit;">
+                            <button type="button" onclick="addCalendarEvent()"
+                                style="padding:6px 15px; background:#0f2e35; color:#f6ecd6; border:none; border-radius:4px; cursor:pointer; font-family:inherit;">
+                                + Tambah
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MATERI SECTION -->
+        <div class="panel materi-panel parchment-box"
+            style="width: 80% !important; margin: 0 auto 10px auto !important;">
+            <div class="bolts"><span></span><span></span><span></span><span></span></div>
+            <div class="materi-layout">
+                <div class="materi-label">
+                    <h2>Materi</h2>
+                </div>
+                <div class="materi-cards" id="materiContainer">
+                    <p style="text-align:center; padding:20px;">Loading Materi...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- JADWAL MATKUL (footer) -->
+        <div class="panel bottom-panel parchment-box"
+            style="width: 80% !important; max-width: 100%; padding: 10px; margin: 0 auto 10px auto !important;">
+            <div class="bolts"><span></span><span></span><span></span><span></span></div>
+
+            <div class="schedule-header">
+                <h3 class="schedule-title">Jadwal Matkul</h3>
+                <div class="schedule-divider">
+                    <span class="diamond-icon">❖</span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="sched-table">
+                    <thead>
+                        <tr>
+                            <th class="time-col"></th>
+                            <th>Senin</th>
+                            <th>Selasa</th>
+                            <th>Rabu</th>
+                            <th>Kamis</th>
+                            <th>Jumat</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleTableBody">
+                        <tr>
+                            <td class="time-col">08:00 - 10:00</td>
+                            <td></td> <!-- Senin -->
+                            <td></td> <!-- Selasa -->
+                            <td></td> <!-- Rabu -->
+                            <td></td> <!-- Kamis -->
+                            <td></td> <!-- Jumat -->
+                        </tr>
+
+                        <tr>
+                            <td class="time-col">10:00 - 12:00</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <td class="time-col">13:00 - 15:00</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <td class="time-col">15:00 - 17:00</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="hook">
+        <div class="chain"></div>
+    </div>
+    <div id="weight">
+        <div class="main"></div>
+        <div class="chain"></div>
+    </div>
+    <div id="weightshadow">
+        <div class="chain"></div>
+    </div>
+
+    <div id="largecog">
+        <img id="cog3a"
+            src="https://25.media.tumblr.com/ac99be8daa6ac86d43358687f67a46ab/tumblr_msnppbHo4M1shpaqho5_250.png"
+            alt="gear">
+        <img id="cog3b"
+            src="https://static.tumblr.com/7c0eea9ec0cad8c8f7aeb51e2c88e08f/ar04e8q/fMjouz3if/tumblr_static_eg5g33ywancocc8gsgowkg4k8.png"
+            alt="gear">
+        <img id="cog4"
+            src="https://25.media.tumblr.com/ed12723661695d6c69cc7e3e418b6211/tumblr_msnppbHo4M1shpaqho7_400.png"
+            alt="gear">
+    </div>
+
+    <div id="right">
+        <div id="mfchain">
+            <div id="mfchainleft"></div>
+            <div id="mfchainright"></div>
+            <div id="mfspin">
+                <div class="bottomlayer"></div>
+                <div id="mfmiddle"></div>
+                <div class="toplayer"></div>
+            </div>
+            <div id="mfcover"></div>
+        </div>
+        <div style="position:relative">
+            <img id="cog1a"
+                src="https://media.tumblr.com/1bd00b3c81506c7cb03b9484edd93187/tumblr_inline_msnq7yD08K1qz4rgp.png"
+                alt="gear">
+            <img id="cog1b"
+                src="https://media.tumblr.com/25c007882a3b456f3635f58ce58c314b/tumblr_inline_msnq86nxld1qz4rgp.png"
+                alt="gear">
+            <img id="cog2a"
+                src="https://media.tumblr.com/abad90366ac3164f8b56dfc46b1ba750/tumblr_inline_msnq8cceub1qz4rgp.png"
+                alt="gear">
+        </div>
+    </div>
+
+    <!-- NAV WHEEL (Handled by navbar.js) -->
+    <!-- Removed manual markup -->
+
+    <script src="../js/layout.js"></script>
+
+    <script>
+        // --- 1. SETUP JAM ---
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const timeEl = document.getElementById('clock');
+            const dateEl = document.getElementById('date');
+            const calEl = document.getElementById('calMonth');
+
+            if (timeEl) timeEl.innerText = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+            if (dateEl) dateEl.innerText = now.toLocaleDateString('id-ID', options);
+            if (calEl) calEl.innerText = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- 2. GET USER & LOAD DATA ---
+        let currentUser = null;
+
+        async function loadDashboardData() {
+            const userStr = sessionStorage.getItem('cq_current');
+            if (!userStr) { window.location.href = '../login.html'; return; }
+
+            currentUser = JSON.parse(userStr);
+            // Update greeting in hero and any other places
+            const displayName = currentUser.nickname && currentUser.nickname.trim() !== '' ? currentUser.nickname : 'User';
+
+            const g1 = document.getElementById('greetingName');
+            if (g1) g1.textContent = displayName;
+
+            const g2 = document.getElementById('greetingNameDuplicate');
+            if (g2) g2.textContent = 'Hai, ' + displayName;
+
+            try {
+                const response = await fetch('../php/dashboard_data.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: currentUser.id })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    const data = result.data;
+
+                    // Update Session Avatar
+                    if (data.avatar && data.avatar.trim() !== "") {
+                        sessionStorage.setItem('cq_avatar', data.avatar);
+                    }
+
+                    // A. Stats
+                    const classEl = document.getElementById('userClass');
+                    const lvlEl = document.getElementById('userLevel');
+                    const ptsEl = document.getElementById('userPoints');
+
+                    // CLAN MAPPING
+                    let clanName = data.class_type;
+                    if (clanName === 'A') clanName = 'Argonite';
+                    else if (clanName === 'B') clanName = 'Brassguard';
+                    else if (clanName === 'C') clanName = 'Copper Core';
+
+                    if (classEl) classEl.innerText = clanName;
+                    if (lvlEl) lvlEl.innerText = data.stats.level || 1;
+                    if (ptsEl) ptsEl.innerText = (data.stats.points || 0).toLocaleString();
+
+                    const tqEl = document.getElementById('totalQuest');
+                    if (tqEl) tqEl.innerText = data.stats.total_quests || 0;
+
+                    // B. To-Do List
+                    const todoContainer = document.getElementById('todoListContainer');
+                    if (todoContainer) {
+                        if (data.todos && data.todos.length > 0) {
+                            todoContainer.innerHTML = data.todos.map(todo => {
+                                const isChecked = todo.is_checked == 1;
+                                return `
+                                <li>
+                                    <input type="checkbox" id="todo_${todo.id}"
+                                           ${isChecked ? 'checked' : ''}
+                                           onchange="toggleTodo(${todo.id}, this)">
+                                    <label for="todo_${todo.id}" ${isChecked ? 'style="text-decoration: line-through; opacity:0.6;"' : ''}>
+                                        ${todo.task_name}
+                                    </label>
+                                </li>`;
+                            }).join('');
+                        } else {
+                            todoContainer.innerHTML = '<li style="text-align:center; list-style:none; opacity:0.6;">Belum ada tugas</li>';
+                        }
+                    }
+
+                    // C. Materi
+                    const matContainer = document.getElementById('materiContainer');
+                    if (matContainer) {
+                        if (data.materials && data.materials.length > 0) {
+                            matContainer.innerHTML = data.materials.map(mat => `
+                                <div class="materi-card-box">
+                                    <div class="materi-card-head">${mat.title}</div>
+                                    <div class="materi-card-desc">
+                                        ${mat.description || 'Belum ada deskripsi.'}
+                                    </div>
+                                    <div class="materi-info">
+                                        Topik: ${mat.category}
+                                    </div>
+                                    <button class="btn-baca-vintage" onclick="window.location.href='materi.html'">
+                                        Baca Materi &gt;
+                                    </button>
+                                </div>
+                            `).join('');
+                        } else {
+                            matContainer.innerHTML = '<p style="text-align:center; padding:20px;">Belum ada materi baru.</p>';
+                        }
+                    }
+
+                    // D. Jadwal
+                    if (data.schedules && data.schedules.length > 0) {
+                        renderScheduleTable(data.schedules);
+                    }
+
+                    // E. Kalender & Upcoming
+                    renderCalendar(data.calendar || {});
+                    renderUpcoming(data.upcoming || []);
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+            }
+        }
+
+        // --- 3. FITUR TAMBAH TO-DO ---
+        async function addTodo() {
+            const input = document.getElementById('newTaskInput');
+            const taskName = input.value.trim();
+            if (!taskName) return alert("Isi nama tugas dulu!");
+
+            try {
+                const response = await fetch('../php/add_todo.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: currentUser.id, task_name: taskName })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    input.value = ''; // Reset input
+                    loadDashboardData(); // Refresh list
+                } else {
+                    alert(result.message);
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // --- 4. FITUR UPDATE TO-DO (AUTO DELETE SETELAH 1 MENIT) ---
+        async function toggleTodo(id, checkbox) {
+            const isChecked = checkbox.checked ? 1 : 0;
+            const label = checkbox.nextElementSibling;
+            const listItem = checkbox.closest('li');
+
+            // Efek visual langsung
+            if (label) {
+                label.style.textDecoration = isChecked ? "line-through" : "none";
+                label.style.opacity = isChecked ? "0.6" : "1";
+            }
+
+            try {
+                const response = await fetch('../php/update_todo.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ todo_id: id, is_checked: isChecked })
+                });
+                const res = await response.json();
+                if (!res.success) {
+                    checkbox.checked = !isChecked; // Revert jika gagal
+                } else if (isChecked) {
+                    // AUTO DELETE SETELAH 1 MENIT (60 detik)
+                    setTimeout(async () => {
+                        try {
+                            await fetch('../php/delete_todo.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ todo_id: id })
+                            });
+                            // Hapus dari tampilan dengan animasi
+                            if (listItem) {
+                                listItem.style.transition = 'opacity 0.5s, transform 0.5s';
+                                listItem.style.opacity = '0';
+                                listItem.style.transform = 'translateX(-20px)';
+                                setTimeout(() => listItem.remove(), 500);
+                            }
+                        } catch (e) { console.error(e); }
+                    }, 60000); // 60000ms = 1 menit
+                }
+            } catch (e) {
+                console.error(e);
+                checkbox.checked = !isChecked;
+            }
+        }
+
+        // --- 5. FITUR TAMBAH EVENT KALENDER ---
+        async function addCalendarEvent() {
+            const titleInput = document.getElementById('eventTitle');
+            const dateInput = document.getElementById('eventDate');
+            const title = titleInput.value.trim();
+            const eventDate = dateInput.value;
+
+            if (!title) return alert("Isi judul event dulu!");
+            if (!eventDate) return alert("Pilih tanggal event!");
+
+            try {
+                const response = await fetch('../php/add_calendar_event.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        title: title,
+                        event_date: eventDate,
+                        type: 'custom'
+                    })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    titleInput.value = '';
+                    dateInput.value = '';
+                    loadDashboardData(); // Refresh untuk update kalender
+                    alert("Event berhasil ditambahkan!");
+                } else {
+                    alert(result.message);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Gagal menambahkan event");
+            }
+        }
+
+        // --- FUNGSI RENDER PENDUKUNG ---
+        function renderUpcoming(upcomingData) {
+            const container = document.getElementById('upcomingEventsContainer');
+            if (!container) return;
+            if (upcomingData.length > 0) {
+                container.innerHTML = upcomingData.map(evt => `
+                    <div class="slot-pill">
+                        <div class="dot"></div>
+                        <span style="flex:1; margin-left:8px; font-weight:bold; color:beige;">${evt.title}</span>
+                        <span style="font-size:0.75rem; margin-right:10px; opacity:0.8; color:beige;">${evt.date_fmt}</span>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<div class="slot-pill" style="justify-content:center; opacity:0.7; font-style:italic;">Tidak ada event dekat</div>';
+            }
+        }
+
+        function renderCalendar(eventsData) {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const startDay = (firstDayIndex === 0 ? 6 : firstDayIndex - 1);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const tbody = document.getElementById('calBody');
+            const calMonthEl = document.getElementById('calMonth');
+            if (calMonthEl) calMonthEl.innerText = date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            let dateCount = 1;
+            let row = document.createElement('tr');
+
+            for (let i = 0; i < startDay; i++) {
+                row.appendChild(document.createElement('td'));
+            }
+
+            for (let i = startDay; i < 7; i++) {
+                if (dateCount > daysInMonth) break;
+                const cell = createDateCell(dateCount, month, year, eventsData);
+                row.appendChild(cell);
+                dateCount++;
+            }
+            tbody.appendChild(row);
+
+            while (dateCount <= daysInMonth) {
+                row = document.createElement('tr');
+                for (let i = 0; i < 7; i++) {
+                    if (dateCount > daysInMonth) {
+                        row.appendChild(document.createElement('td'));
+                    } else {
+                        const cell = createDateCell(dateCount, month, year, eventsData);
+                        row.appendChild(cell);
+                        dateCount++;
+                    }
+                }
+                tbody.appendChild(row);
+            }
+        }
+
+        function createDateCell(day, month, year, eventsData) {
+            const cell = document.createElement('td');
+            // Wrap number in span to ensure z-index above scribble
+            const numSpan = document.createElement('span');
+            numSpan.innerText = day;
+            numSpan.style.position = 'relative';
+            numSpan.style.zIndex = '2';
+            cell.appendChild(numSpan);
+
+            const today = new Date();
+            // Highlight TODAY
+            if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                cell.style.backgroundColor = '#1a4f5a'; // Deep Tosca
+                cell.style.color = '#e6dcc5'; // Gold/Beige (Not White)
+                cell.style.fontWeight = 'bold';
+                cell.style.borderRadius = '4px';
+                cell.style.boxShadow = 'inset 0 0 5px rgba(0,0,0,0.5)';
+            }
+
+            // Highlight EVENT (Scribble)
+            if (eventsData[day]) {
+                const scribble = document.createElement('div');
+                scribble.className = 'scribble-mark';
+                cell.appendChild(scribble);
+
+                cell.title = eventsData[day].map(e => e.title).join(', ');
+                cell.style.cursor = 'help';
+            }
+            return cell;
+        }
+
+        // LOGOUT: panggil endpoint server lalu clear client storage dan redirect
+        async function logoutHandler(e) {
+            if (e) e.preventDefault();
+            try {
+                await fetch('../php/logout.php', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            } catch (err) {
+                console.error('Logout request failed', err);
+            } finally {
+                sessionStorage.clear();
+                window.location.href = '../login.html';
+            }
+        }
+
+        function getDayIndex(dayName) {
+            const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+            const idx = days.indexOf(dayName);
+            if (idx === -1) return -1; // If Saturday or Sunday found in DB, ignore it
+            return idx + 1; // +1 karena kolom 0 = jam
+        }
+
+        function getTimeSlotIndex(timeStart) {
+            const hour = parseInt(timeStart.split(':')[0], 10);
+
+            if (hour < 10) return 0;      // 08:00 - 10:00
+            if (hour < 12) return 1;      // 10:00 - 12:00
+            if (hour < 15) return 2;      // 13:00 - 15:00
+            return 3;                     // 15:00 - 17:00
+        }
+
+        function renderScheduleTable(schedules) {
+            const tbody = document.getElementById('scheduleTableBody');
+            if (!tbody) return;
+
+            // Bersihin semua cell (kecuali kolom jam)
+            [...tbody.rows].forEach(row => {
+                [...row.cells].forEach((cell, i) => {
+                    if (i !== 0) cell.innerHTML = '';
+                });
+            });
+
+            schedules.forEach(sch => {
+                const rowIndex = getTimeSlotIndex(sch.time_start);
+                const colIndex = getDayIndex(sch.day_name);
+
+                if (colIndex === -1) return; // Skip if day not in list (e.g. Saturday)
+
+                const row = tbody.rows[rowIndex];
+                if (!row) return;
+
+                const cell = row.cells[colIndex];
+                if (!cell) return;
+
+                cell.innerHTML = `
+                    <div class="active-class">
+                        <strong>${sch.subject_name}</strong><br>
+                        <span style="font-size:0.75rem; opacity:0.8;">
+                            ${sch.time_start} - ${sch.time_end}<br>
+                            ${sch.room}
+                        </span>
+                    </div>
+                `;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboardData();
+            const lb = document.getElementById('logoutBtn');
+            if (lb) lb.addEventListener('click', logoutHandler);
+
+            // PEMWEBEUY: Initialize Scrolling Gears Animation
+            initScrollingGears();
+
+            // PEMWEBEUY: Initialize Frame Overlay for stat-boxes
+            updateFrameSides();
+            window.addEventListener('resize', updateFrameSides);
+
+            // FALLBACK: Render calendar immediately (even without API data)
+            renderCalendar({});
+        });
+
+        // --- PEMWEBEUY: UPDATE FRAME SIDE HEIGHTS ---
+        function updateFrameSides() {
+            document.querySelectorAll('.stat-box.parchment-box').forEach(box => {
+                const height = box.offsetHeight;
+                const leftFrame = box.querySelector('.frame-side-left');
+                const rightFrame = box.querySelector('.frame-side-right');
+                if (leftFrame) leftFrame.style.width = height + 'px';
+                if (rightFrame) rightFrame.style.width = height + 'px';
+            });
+        }
+
+        // --- PEMWEBEUY: SCROLLING GEARS ANIMATION ---
+        // Align gears with ToDo panel like PEMWEBEUY
+        function initScrollingGears() {
+            const gearLeft = document.querySelector('.gear-left');
+            const gearLeftSmall = document.querySelector('.gear-left-small');
+
+            function alignGears() {
+                const todoPanel = document.querySelector('.todo-panel');
+                const gearOffset = (gearLeft?.offsetHeight || 600) / 2;
+                const smallGearOffset = 25; // Gap below big gear
+
+                if (todoPanel && gearLeft) {
+                    const rect = todoPanel.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    const topPos = rect.top + scrollTop + rect.height / 2 - gearOffset;
+                    gearLeft.style.top = topPos + 'px';
+
+                    if (gearLeftSmall) {
+                        gearLeftSmall.style.top = (topPos + gearLeft.offsetHeight - smallGearOffset) + 'px';
+                    }
+                }
+            }
+
+            // Scroll animation - rotate gears
+            function onScroll() {
+                const scrollY = window.scrollY;
+                const rotationBig = scrollY * 0.2;
+                const rotationSmall = -scrollY * 0.3; // Opposite direction, faster
+
+                if (gearLeft) {
+                    gearLeft.style.transform = `rotate(${rotationBig}deg)`;
+                }
+                if (gearLeftSmall) {
+                    gearLeftSmall.style.transform = `rotate(${rotationSmall}deg)`;
+                }
+            }
+
+            // Initial alignment
+            alignGears();
+            onScroll();
+
+            // Re-align on scroll, resize
+            window.addEventListener('scroll', onScroll);
+            window.addEventListener('resize', alignGears);
+            window.addEventListener('load', alignGears);
+        }
+    </script>
+    <script src="../js/navbar.js?v=20251216_bust"></script>
+    <script src="../js/no-zoom.js"></script>
+</body>
+
+</html>

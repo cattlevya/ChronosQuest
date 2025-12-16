@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Detail Materi - ChronosQuest</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f2e35 0%, #1a4f5a 50%, #0f2e35 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            padding-bottom: 250px;
+            font-family: 'Libre Baskerville', serif;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            background: #c5a059;
+            color: #0f2e35;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            background: #dfc37b;
+        }
+
+        .materi-detail {
+            background-color: #cab384;
+            background-image: linear-gradient(rgba(255, 243, 218, 0.5), rgba(255, 243, 218, 0.5)), url('../assets/texture_carrd.png');
+            background-size: cover;
+            border: 4px solid #4a3c31;
+            border-radius: 5px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .materi-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: #0f2e35;
+            margin-bottom: 10px;
+        }
+
+        .materi-category {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed #a89970;
+        }
+
+        .materi-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">&laquo; Kembali ke Dashboard</button>
+
+        <div class="materi-detail" id="materiDetail">
+            <div class="loading">Memuat materi...</div>
+        </div>
+    </div>
+
+    <script>
+        async function loadMateriDetail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const materiId = urlParams.get('id');
+
+            if (!materiId) {
+                document.getElementById('materiDetail').innerHTML = `
+                    <div class="loading">ID materi tidak ditemukan.</div>
+                `;
+                return;
+            }
+
+            try {
+                const response = await fetch('../php/get_materi_detail.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: materiId })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    const mat = result.data;
+                    document.getElementById('materiDetail').innerHTML = `
+                        <h1 class="materi-title">${mat.title}</h1>
+                        <div class="materi-category">Kategori: ${mat.category}</div>
+                        <div class="materi-content">${mat.content || mat.description || 'Konten materi belum tersedia.'}</div>
+                    `;
+                    document.title = mat.title + ' - ChronosQuest';
+                } else {
+                    document.getElementById('materiDetail').innerHTML = `
+                        <div class="loading">${result.message}</div>
+                    `;
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById('materiDetail').innerHTML = `
+                    <div class="loading">Gagal memuat materi.</div>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadMateriDetail);
+    </script>
+</body>
+
+</html>

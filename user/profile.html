@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Profile - ChronosQuest</title>
+    <!-- Combined font imports -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Rye&family=Lobster&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css?v=20251216">
+    <link rel="stylesheet" href="../css/profile.css?v=20251216">
+</head>
+
+<body>
+
+    <div class="profile-container">
+        <!-- LEFT COLUMN: GEAR AVATAR -->
+        <div class="profile-left">
+            <div class="avatar-wrapper" style="position:relative;">
+                <div class="gear-frame"></div>
+                <img src="../assets/profile.png" alt="User Avatar" class="avatar-img" id="userAvatarImg"
+                    style="cursor:pointer;" onclick="document.getElementById('avatarInput').click()"
+                    title="Klik untuk ganti foto">
+                <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar()">
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: INFO & STATS -->
+        <div class="profile-right">
+            <div class="user-info">
+                <h1 id="pName">Loading...</h1>
+                <h3 id="pEmail">...</h3>
+                <h3 id="pClass" style="color:#e6dcc5;">...</h3>
+            </div>
+
+            <div class="profile-stats">
+                <!-- LEVEL CARD -->
+                <div class="stat-card">
+                    <h4>Level Anda</h4>
+                    <p class="value" id="pLevel">-</p>
+                    <div class="card-bolt tl"></div>
+                    <div class="card-bolt tr"></div>
+                    <div class="card-bolt bl"></div>
+                    <div class="card-bolt br"></div>
+                </div>
+
+                <!-- POINT CARD -->
+                <div class="stat-card">
+                    <h4>Point</h4>
+                    <p class="value" id="pPoints">-</p>
+                    <div class="card-bolt tl"></div>
+                    <div class="card-bolt tr"></div>
+                    <div class="card-bolt bl"></div>
+                    <div class="card-bolt br"></div>
+                </div>
+
+                <!-- QUEST CARD -->
+                <div class="stat-card">
+                    <h4>Total Quest</h4>
+                    <p class="value" id="pQuests">-</p>
+                    <div class="card-bolt tl"></div>
+                    <div class="card-bolt tr"></div>
+                    <div class="card-bolt bl"></div>
+                    <div class="card-bolt br"></div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <!-- NAVBAR SCRIPT -->
+    <script src="../js/navbar.js?v=20251216_bust"></script>
+
+    <script>
+        async function loadProfile() {
+            const userStr = sessionStorage.getItem('cq_current');
+            if (!userStr) {
+                window.location.href = '../login.html';
+                return;
+            }
+            const user = JSON.parse(userStr);
+
+            try {
+                const response = await fetch('../php/profile_data.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: user.id })
+                });
+
+                const rawText = await response.text();
+                let result;
+                try {
+                    result = JSON.parse(rawText);
+                } catch (e) {
+                    throw new Error("Invalid Server Response: " + rawText.substring(0, 200));
+                }
+
+                if (result.success) {
+                    const d = result.data;
+                    document.getElementById('pName').innerText = d.nickname;
+                    document.getElementById('pEmail').innerText = d.email;
+                    document.getElementById('pClass').innerText = (d.class_type && d.class_type !== 'None' ? d.class_type : '-');
+
+                    document.getElementById('pLevel').innerText = d.level;
+                    document.getElementById('pPoints').innerText = parseInt(d.points).toLocaleString();
+                    document.getElementById('pQuests').innerText = d.total_quests;
+
+                    // AVATAR LOGIC
+                    let avatarUrl = `https://api.dicebear.com/9.x/adventurer/svg?seed=${d.nickname}&backgroundColor=b6e3f4`;
+                    if (d.avatar && d.avatar.trim() !== "") {
+                        avatarUrl = d.avatar; // Use custom avatar
+                    }
+                    document.getElementById('userAvatarImg').src = avatarUrl;
+
+                    // SAVE TO SESSION FOR NAVBAR
+                    sessionStorage.setItem('cq_avatar', avatarUrl);
+
+                    document.title = `Profile - ${d.nickname} | ChronosQuest`;
+                } else {
+                    alert("Gagal memuat profil: " + result.message);
+                }
+            } catch (error) {
+                console.error("Error connecting to backend:", error);
+                alert("Error: " + error.message);
+            }
+        }
+
+        async function uploadAvatar() {
+            const fileInput = document.getElementById('avatarInput');
+            if (fileInput.files.length === 0) return;
+
+            const userStr = sessionStorage.getItem('cq_current');
+            const user = JSON.parse(userStr);
+
+            const formData = new FormData();
+            formData.append('avatar', fileInput.files[0]);
+            formData.append('user_id', user.id);
+
+            try {
+                const response = await fetch('../php/upload_profile.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert("Foto berhasil diganti!");
+                    loadProfile(); // Refresh UI
+                    // Reload page to update Navbar which runs on load
+                    setTimeout(() => location.reload(), 500);
+                } else {
+                    alert("Gagal upload: " + result.message);
+                }
+            } catch (e) {
+                alert("Error upload: " + e.message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadProfile);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,920 @@
+﻿/* --- STEAMPUNK DASHBOARD STYLES (MATCHING ANIME REFERENCE) --- */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@700&family=Rye&display=swap');
+
+@font-face {
+    font-family: 'Steampunk';
+    src: url('../fonts/SteampunkDemoByMartaVanEck-lwEe.ttf') format('truetype');
+}
+
+:root {
+    --bg-color: #0f2e35;
+    /* Dark Teal Background */
+    --parchment-bg: #e6dcc5;
+    /* Light Beige/Parchment */
+    --parchment-border: #6d5843;
+    /* Brown Border */
+    --accent-gold: #c5a059;
+    --text-dark: #2b1d0e;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    padding-bottom: 0px;
+    background-color: var(--bg-color);
+    background-image: url('../images/texture_grunge.png');
+    color: var(--text-dark);
+    font-family: 'Playfair Display', serif;
+    min-height: 100vh;
+}
+
+/* --- 1. HERO HEADER --- */
+.hero-header {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+
+.header-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0));
+}
+
+.header-overlay {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+    max-width: 50%;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user-greeting {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 4em;
+    color: #fff;
+    margin: 0 0 40px 0;
+    font-weight: 400;
+}
+
+.welcome-text {
+    font-family: 'Steampunk', serif;
+    font-size: 6em;
+    color: #e6dcc5;
+    margin: 0;
+    line-height: 0.9;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+}
+
+/* --- 2. MAIN CONTAINER --- */
+.main-container {
+    max-width: 1350px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    position: relative;
+    margin-top: -150px;
+    z-index: 200;
+}
+
+/* --- 3. PARCHMENT WIDGET (REF: Dark Border, Inset Bolts) --- */
+.parchment-box {
+    background-color: #cab384;
+    /* Tint texture with user color #FFF3DA */
+    background-image: linear-gradient(rgba(255, 243, 218, 0.5), rgba(255, 243, 218, 0.5)), url('../images/texture_carrd.png') !important;
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* User Green Border #153740 */
+    /* border: 2px solid #153740; */
+    /* outline: 2px solid #e6dcc5; */
+    /* Industrial Steampunk Border */
+    border: 4px solid #4a3c31 !important;
+    /* Dark Iron */
+    outline: 2px dashed #c5a059 !important;
+    /* Brass/Gold Dashed */
+    outline-offset: -10px;
+    box-shadow:
+        inset 0 0 20px rgba(0, 0, 0, 0.6),
+        /* Inner depth */
+        0 0 0 2px #2b1d0e,
+        /* Outer thin dark line */
+        5px 5px 15px rgba(0, 0, 0, 0.5);
+    /* Drop Shadow */
+
+    border-radius: 2px;
+    padding: 20px;
+    position: relative;
+    margin: 2px;
+    overflow: visible !important;
+}
+
+/* --- FRAME OVERLAY (FIXED) --- */
+/* Exact positioning with negative margins to hang off the edge */
+
+.frame-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    /* Lower than content but higher than bg */
+}
+
+/* Base style for all frame parts */
+.frame-part {
+    position: absolute;
+    background-image: url('../images/frame.png?v=999');
+    /* FIX: Use 'auto 100%' to keep aspect ratio of pattern.
+       This prevents squishing/stretching.
+       We rely on repeat-x to fill the length. */
+    background-size: auto 100%;
+    background-repeat: repeat-x;
+}
+
+.frame-top {
+    height: 25px;
+    width: calc(100% + 24px);
+    top: -12px;
+    left: -12px;
+    z-index: 10;
+    /* Highest Priority in Overlay */
+    clip-path: polygon(0 0, 100% 0, calc(100% - 25px) 100%, 25px 100%);
+}
+
+.frame-bottom {
+    height: 25px;
+    width: calc(100% + 24px);
+    bottom: -12px;
+    left: -12px;
+    transform: scaleY(-1);
+    z-index: 10;
+    /* Highest Priority in Overlay */
+    clip-path: polygon(0 0, 100% 0, calc(100% - 25px) 100%, 25px 100%);
+}
+
+.frame-side-left {
+    /* Rotated side frame */
+    height: 25px;
+    width: 100px;
+    /* JS Updates Length */
+
+    top: 0;
+    left: -12px;
+    z-index: 5;
+    /* Lower priority - sits BEHIND top/bottom */
+
+    /*
+       Left Logic:
+       Origin 0 0.
+       ScaleY(-1) Flips texture (Shadow Top -> Top).
+       Rotate 90deg (Top -> Right). Shadow on Right (Inside).
+       Flip moves bar inward by 25px, so we change left from 13 to -12.
+    */
+    transform-origin: 0 0;
+    transform: rotate(90deg) scaleY(-1);
+
+    background-image: url('../images/frame.png?v=999');
+}
+
+.frame-side-right {
+    /* Rotated side frame */
+    height: 25px;
+    width: 100px;
+    /* JS Updates Length */
+
+    top: 0;
+    right: -12px;
+    /* Anchor exactly at Right Edge */
+    z-index: 5;
+    /* Lower priority - sits BEHIND top/bottom */
+
+    /*
+       Right Logic:
+       Origin Top Right.
+       ScaleY(-1) Flips texture.
+       Rotate -90deg (CCW).
+       Flip moves bar inward, so we change right from 13 to -12.
+    */
+    transform-origin: top right;
+    transform: rotate(-90deg) scaleY(-1);
+
+    background-image: url('../images/frame.png?v=999');
+}
+
+/* Ensure Content sits ABOVE the frame */
+.content-center,
+.clock-panel .time,
+.clock-panel .date,
+.panel-title,
+.todo-list,
+.calendar-inner-box,
+.materi-layout,
+.schedule-table-container {
+    position: relative;
+    z-index: 5;
+}
+
+/* Bolts (Inset - Smaller) */
+.bolts span {
+    position: absolute;
+    width: 8px;
+    /* Reduced to 8px */
+    height: 8px;
+    /* User Brown Color #745E3B */
+    background: radial-gradient(circle, #967e56, #745E3B);
+    background-color: #745E3B;
+    border-radius: 50%;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    z-index: 20;
+    /* Ensure visual priority over frame (z-index 10) */
+    border: 1px solid #153740;
+}
+
+/* Bolts Positions (Tight to Corners - Fixed to sit ON the frame) */
+.bolts span:nth-child(1) {
+    top: -5px;
+    left: -5px;
+}
+
+.bolts span:nth-child(2) {
+    top: -5px;
+    right: -5px;
+}
+
+.bolts span:nth-child(3) {
+    bottom: -5px;
+    left: -5px;
+}
+
+.bolts span:nth-child(4) {
+    bottom: -5px;
+    right: -5px;
+}
+
+
+/* --- 4. STATS ROW (LEVEL BOXES) --- */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    margin-bottom: 50px;
+    /* Atur jarak ini untuk menjauhkan statbox dari maincard bawahnya */
+}
+
+.stat-box {
+    text-align: center;
+    padding: 30px 40px;
+    min-height: 210px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none !important;
+    outline: none !important;
+}
+
+.clock-panel {
+    min-height: 209px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Vertically center */
+    align-items: center;
+    /* Horizontally center */
+}
+
+.stat-box .label {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 3em;
+    font-weight: 700;
+    color: #0f2e35;
+}
+
+/* --- 5. MID GRID (CENTERED STEM OF T-SHAPE) --- */
+/* Restrict width to same as 2 top cards + 1 gap */
+/* Formula: (100% - 2 gaps) / 3 * 2 + 1 gap -> approx 66% area */
+* {
+    box-sizing: border-box;
+}
+
+.mid-grid,
+.materi-section,
+.schedule-section {
+    width: 75% !important;
+    margin: 0 auto 30px auto !important;
+    /* Center horizontally */
+}
+
+.mid-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Clock and Calendar equal width inside the stem */
+    gap: 20px;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+
+/* Clock Panel */
+.clock-panel .time {
+    font-family: 'Playfair Display', serif;
+    font-size: 11em;
+    /* Increased size */
+    font-style: italic;
+    text-align: center;
+    font-weight: 600;
+    color: #0f2e35;
+    /* Dark Teal to match reference */
+    margin: 0;
+    margin-top: -30px;
+    /* Angkat sedikit ke atas */
+    line-height: 1;
+}
+
+.clock-panel .date {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    /* Ensure font matches */
+    font-style: italic;
+    font-size: 2.5em;
+    font-weight: 600;
+    color: #0f2e35;
+    /* Dark Teal */
+    width: 100%;
+    margin: 0 auto;
+    padding-top: 10px;
+    border-top: none;
+    /* Remove line */
+}
+
+/* Todo Panel */
+.panel-title {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.panel-title h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2em;
+    font-style: italic;
+    margin: 0;
+}
+
+.divider {
+    height: 2px;
+    background: var(--text-dark);
+    width: 100%;
+    margin-top: 5px;
+    position: relative;
+}
+
+.divider::after {
+    content: 'â–';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--parchment-bg);
+    padding: 0 10px;
+}
+
+.todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.todo-list li {
+    display: flex;
+    align-items: center;
+    font-style: italic;
+    font-size: 1.3em;
+    margin-bottom: 10px;
+    border-bottom: 1px dotted rgba(0, 0, 0, 0.2);
+    padding-bottom: 5px;
+}
+
+/* Custom Checkbox Styling */
+.todo-list input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 25px;
+    height: 25px;
+    margin-right: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    vertical-align: middle;
+    position: relative;
+    border: none;
+    outline: none;
+    /* Unchecked: Dark Square */
+    background-color: var(--text-dark);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Checked State: Lighter Square with Circle */
+.todo-list input[type="checkbox"]:checked {
+    background-color: #7a8b8f;
+    /* Greyish */
+}
+
+.todo-list input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    background-color: #dbe4e6;
+    border-radius: 50%;
+}
+
+/* Label Strikethrough when Checked */
+.todo-list input[type="checkbox"]:checked+label {
+    text-decoration: line-through;
+    color: #888;
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* Calendar Panel (Right Side) */
+.calendar-inner-box {
+    background: transparent !important;
+    border-radius: 8px;
+    padding: 20px;
+    color: var(--text-dark) !important;
+    border: none !important;
+}
+
+.calendar-header-text {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.calendar-table {
+    width: 100%;
+    text-align: center;
+    border-collapse: separate;
+    border-spacing: 5px;
+}
+
+.calendar-table th {
+    font-size: 0.8em;
+    color: var(--parchment-border) !important;
+    font-weight: bold;
+}
+
+.calendar-table td {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 0.9em;
+}
+
+.calendar-table td:hover {
+    background: rgba(109, 88, 67, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.schedule-slots-deco {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.slot-pill {
+    background: var(--parchment-border);
+    height: 35px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    padding-left: 5px;
+}
+
+.slot-pill .circle {
+    width: 25px;
+    height: 25px;
+    background: var(--parchment-bg);
+    border-radius: 50%;
+}
+
+/* --- 6. MATERI SECTION --- */
+.materi-layout {
+    display: flex;
+}
+
+.materi-title {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 2px solid var(--text-dark);
+}
+
+.materi-title h2 {
+    font-size: 2.5em;
+    font-style: italic;
+    transform: none;
+}
+
+.materi-cards {
+    width: 80%;
+    display: flex;
+    gap: 20px;
+    padding-left: 20px;
+}
+
+.materi-card-item {
+    flex: 1;
+    background: transparent !important;
+    border: none !important;
+    padding: 5px;
+    color: var(--text-dark) !important;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    font-family: 'Playfair Display', serif;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 5px;
+    font-size: 1.2em;
+    border-bottom: 2px solid var(--parchment-border) !important;
+    padding-bottom: 2px;
+}
+
+.card-body {
+    background: transparent !important;
+    color: var(--text-dark) !important;
+    padding: 10px;
+    min-height: 80px;
+    font-size: 0.8em;
+    position: relative;
+    font-weight: 600;
+}
+
+.btn-read {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: var(--parchment-border) !important;
+    color: white;
+    border: none;
+    font-size: 0.7em;
+    padding: 2px 5px;
+    cursor: pointer;
+}
+
+/* --- 7. SCHEDULE TABLE (FOOTER) --- */
+.schedule-table-container {
+    width: 100%;
+}
+
+.main-schedule {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Playfair Display', serif;
+}
+
+.main-schedule th,
+.main-schedule td {
+    border: 1px solid var(--text-dark);
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.main-schedule th {
+    font-style: italic;
+    font-size: 1.1em;
+}
+
+.main-schedule td.filled {
+    background: #7a8b8f;
+    color: white;
+    font-size: 0.9em;
+}
+
+/* --- RESPONSIVE --- */
+@media screen and (max-width: 768px) {
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+
+    .mid-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .materi-layout {
+        flex-direction: column;
+    }
+
+    .materi-title {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid;
+        margin-bottom: 10px;
+    }
+
+    .materi-cards {
+        width: 100%;
+        padding-left: 0;
+        flex-direction: column;
+    }
+
+    .welcome-text {
+        font-size: 3em;
+    }
+}
+
+/* --- SCROLLING GEARS --- */
+/* --- SCROLLING GEARS --- */
+.scroll-gear {
+    position: absolute;
+    width: 600px;
+    z-index: 10;
+    /* Lower than content (200) but visible */
+    pointer-events: none;
+    /* transition removed for tighter scroll sync */
+}
+
+.gear-left {
+    left: -300px;
+    /* Stick out LEFT screen edge 50% (300px of 600px) */
+    /* top handled by JS */
+}
+
+.gear-right {
+    right: -125px;
+    /* Stick out RIGHT screen edge 50% */
+    /* top handled by JS */
+}
+
+.gear-left-small {
+    width: 400px;
+    /* Half size of big gear */
+    left: -210px;
+    /* Stick out 50% */
+    z-index: 9;
+}
+
+/* --- BOTTOM NAVIGATION (FIXED GEAR) --- */
+.bottom-nav-container {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0;
+    width: 100%;
+    height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 9999;
+    padding: 0;
+    margin: 0;
+    pointer-events: none;
+}
+
+.nav-gear-wrapper {
+    position: relative;
+    width: 600px;
+    /* Increased to 600px */
+    height: 600px;
+    transform: translateY(50%);
+    /* Robust way to show top half */
+    margin-bottom: 0;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-gear-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: auto;
+}
+
+.nav-links {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* Base Item Style */
+.nav-item {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+
+    /* Start at Center of the 600x600 box */
+    top: 50%;
+    left: 50%;
+    margin-top: -30px;
+    margin-left: -30px;
+
+    /* Transform Origin for 600px circle (Radius 300px) */
+    transform-origin: center 300px;
+
+    /* Transform Origin is the center of the item itself */
+    /* We use translate to move it out to the rim */
+
+    pointer-events: auto;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+    z-index: 10000;
+}
+
+/* ARC POSITIONS */
+/* 
+   Gear Radius approx 250px.
+   We want icons on the TOP rim.
+   Angle 0 is straight UP.
+*/
+
+/* Item 1: Far Left (-45 deg) */
+.item-1 {
+    /* Rotate to angle -> Move out by Radius (220px) -> Rotate back to keep upright */
+    transform: rotate(-45deg) translateY(-220px) rotate(45deg);
+}
+
+/* Item 2: Mid Left (-15 deg) */
+.item-2 {
+    transform: rotate(-15deg) translateY(-220px) rotate(15deg);
+}
+
+/* Item 3: Mid Right (+15 deg) */
+.item-3 {
+    transform: rotate(15deg) translateY(-220px) rotate(-15deg);
+}
+
+/* Item 4: Far Right (+45 deg) */
+.item-4 {
+    transform: rotate(45deg) translateY(-220px) rotate(-45deg);
+}
+
+
+/* ICON STYLING */
+.nav-item .icon-circle {
+    width: 100%;
+    height: 100%;
+    background: #e6dcc5;
+    border: 3px solid #6d5843;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.nav-item .icon-circle img {
+    width: 65%;
+    height: 65%;
+    object-fit: contain;
+}
+
+/* HOVER EFFECTS */
+.nav-item:hover .icon-circle {
+    background: #fff;
+    transform: scale(1.2);
+    /* Increased scale as requested */
+    box-shadow: 0 0 20px #c5a059;
+    /* Enhanced glow */
+    border-color: #c5a059;
+}
+
+/* ACTIVE STATE */
+.nav-item.active .icon-circle {
+    background: #fff;
+    transform: scale(1.2);
+    /* Keep active item slightly larger */
+    border-color: #0f2e35;
+    box-shadow: 0 0 25px rgba(197, 160, 89, 0.8), inset 0 0 10px rgba(0, 0, 0, 0.3);
+    /* Strong glow */
+}
+
+/* Optional: Add transition for smooth active state */
+.nav-item.active {
+    z-index: 10001;
+    /* Ensure active item is on top */
+}
+/* --- CONSOLIDATED DASHBOARD & LAYOUT FIXES --- */
+
+/* 1. Layout Alignment (Flexbox) */
+.mid-grid {
+    display: flex !important;
+    gap: 20px !important;
+    align-items: stretch !important;  /* Ensures children are same height */
+    justify-content: space-between !important;
+    width: 100% !important;
+}
+
+.left-column, .right-column {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+}
+
+/* Ensure right column panel takes full height if needed */
+.calendar-panel {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.calendar-inner-box {
+    flex-grow: 1 !important; /* Pushes content to fill space */
+}
+
+/* 2. Color Harmony (Tosca Theme: #0f2e35) */
+
+/* General Text & Borders */
+html body .parchment-box .calendar-inner-box,
+html body .parchment-box .materi-card-item,
+html body .card-header,
+html body .todo-list li,
+html body .panel-title h3,
+html body .calendar-header-text,
+html body .materi-title h2,
+html body .todo-list label {
+    color: #0f2e35 !important;
+    border-color: #0f2e35 !important;
+    border-bottom-color: #0f2e35 !important;
+}
+
+/* Specific Border Overrides */
+html body .parchment-box .materi-card-item,
+html body .parchment-box .calendar-inner-box {
+    border: none !important; /* Remove boxy borders if preferred by critical override */
+    /* If borders ARE wanted, change this to border: 1px solid #0f2e35 !important; */
+}
+
+/* Checkboxes */
+html body .todo-list input[type='checkbox']:checked {
+    background-color: #0f2e35 !important;
+    box-shadow: 0 0 5px #0f2e35 !important;
+    border: none !important;
+}
+
+/* Table Headers & Cells */
+html body .calendar-table th,
+html body .main-schedule th,
+html body .main-schedule td {
+    color: #0f2e35 !important;
+    border-color: #0f2e35 !important;
+    font-weight: bold !important;
+}
+
+/* Buttons & Pills */
+html body .btn-read,
+html body .slot-pill {
+    background-color: #0f2e35 !important;
+    color: #fff !important;
+}
+
+/* Hover States */
+html body .calendar-table td:hover {
+    background-color: rgba(15, 46, 53, 0.2) !important;
+    color: #0f2e35 !important;
+}
+
+

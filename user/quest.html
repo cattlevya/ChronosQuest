@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quest Log - Steampunk LMS</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lobster&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/quest.css">
+</head>
+
+<body>
+    <a href="#" class="credit" title="Steampunk LMS"></a>
+
+    <div id="hook">
+        <div class="chain"></div>
+    </div>
+    <div id="weight">
+        <div class="main"></div>
+        <div class="chain"></div>
+    </div>
+    <div id="weightshadow">
+        <div class="chain"></div>
+    </div>
+
+    <div id="largecog">
+        <img id="cog3a"
+            src="https://25.media.tumblr.com/ac99be8daa6ac86d43358687f67a46ab/tumblr_msnppbHo4M1shpaqho5_250.png"
+            alt="gear" />
+        <img id="cog3b"
+            src="https://static.tumblr.com/7c0eea9ec0cad8c8f7aeb51e2c88e08f/ar04e8q/fMjouz3if/tumblr_static_eg5g33ywancocc8gsgowkg4k8.png"
+            alt="gear" />
+        <img id="cog4"
+            src="https://25.media.tumblr.com/ed12723661695d6c69cc7e3e418b6211/tumblr_msnppbHo4M1shpaqho7_400.png"
+            alt="gear" />
+    </div>
+
+    <div id="right">
+        <div id="mfchain">
+            <div id="mfchainleft"></div>
+            <div id="mfchainright"></div>
+            <div id="mfspin">
+                <div class="bottomlayer"></div>
+                <div id="mfmiddle"></div>
+                <div class="toplayer"></div>
+            </div>
+            <div id="mfcover"></div>
+        </div>
+        <div>
+            <img id="cog1a"
+                src="https://media.tumblr.com/1bd00b3c81506c7cb03b9484edd93187/tumblr_inline_msnq7yD08K1qz4rgp.png"
+                alt="gear" />
+            <img id="cog1b"
+                src="https://media.tumblr.com/25c007882a3b456f3635f58ce58c314b/tumblr_inline_msnq86nxld1qz4rgp.png"
+                alt="gear" />
+            <img id="cog2a"
+                src="https://media.tumblr.com/abad90366ac3164f8b56dfc46b1ba750/tumblr_inline_msnq8cceub1qz4rgp.png"
+                alt="gear" />
+        </div>
+
+        <div id="side">
+            <a href="profile.html" class="avatar">
+                <img src="../assets/profile.png" alt="Avatar" />
+            </a>
+            <div class="description">
+                <h1>Papan Misi</h1>
+                <div class="divider"></div>
+                <p>Selesaikan tantangan untuk mendapatkan poin pengetahuan.</p>
+                <div class="divider"></div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="window.location.href='dashboard.html'" class="side-btn">&laquo; Dashboard</button>
+                </div>
+            </div>
+            <div class="buttonlinks">
+                <span><a href="dashboard.html" title="Dashboard">I</a></span>
+                <span><a href="materi.html" title="Materi">II</a></span>
+                <span><a href="quest.html" title="Quest">III</a></span>
+                <span><a href="profile.html" title="Profile">IV</a></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="rightshadow">
+        <div id="mfschain">
+            <div id="mfschainleft"></div>
+            <div id="mfschainright"></div>
+        </div>
+        <img id="sideshadow"
+            src="https://25.media.tumblr.com/147c1ffd4f7abb027b7509f1c0d3c4dc/tumblr_msnppbHo4M1shpaqho8_400.png"
+            alt="shadow" />
+    </div>
+
+
+
+
+
+
+
+    <div id="content">
+        <img class="bgtop"
+            src="https://24.media.tumblr.com/6bc225bb6516ec88244872b095b464f2/tumblr_msnppbHo4M1shpaqho9_r1_400.png"
+            alt="decor" />
+
+        <div id="page-quest" class="page-section">
+            <div class="post">
+                <div id="frame">
+                    <div class="frametop"></div>
+                    <div class="frameleft"></div>
+                    <div class="frameright"></div>
+                    <div class="framebottom"></div>
+
+                    <div class="content-inner">
+                        <div class="quest-header-box">
+                            <h1 class="main-title">Quest</h1>
+                        </div>
+
+                        <div class="quest-grid" id="questList">
+                            <p
+                                style="grid-column: 1 / -1; text-align: center; color: #333; font-style:italic; padding:20px;">
+                                Sedang mengambil data misi...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <img class="bgbottom"
+            src="https://24.media.tumblr.com/5ac1df84822e5c83122c686964646c1c/tumblr_msnppbHo4M1shpaqho10_r1_400.png"
+            alt="decor" />
+    </div>
+
+    <script src="../js/layout.js"></script>
+    <script>
+        async function loadQuestData() {
+            // 1. Cek Login
+            const userStr = sessionStorage.getItem('cq_current');
+            if (!userStr) {
+                window.location.href = '../login.html';
+                return;
+            }
+            const user = JSON.parse(userStr);
+
+            try {
+                // 2. Fetch Data
+                const response = await fetch('../php/quest_data.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: user.id })
+                });
+
+                const contentType = response.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    // Fallback Dummy jika PHP error
+                    renderQuests([
+                        { title: "Java Script", description: "pemahaman dasar javascript", target_count: 30, is_locked: 0 },
+                        { title: "Java Script", description: "variabel dan tipe data", target_count: 30, is_locked: 0 },
+                        { title: "Java Script", description: "struktur kontrol flow", target_count: 30, is_locked: 1 }
+                    ]);
+                    return;
+                }
+
+                const result = await response.json();
+                if (result.success) {
+                    renderQuests(result.data.quests);
+                } else {
+                    document.getElementById('questList').innerHTML = `<p style="text-align:center;">${result.message}</p>`;
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+
+        function renderQuests(quests) {
+            const container = document.getElementById('questList');
+
+            if (quests.length > 0) {
+                container.innerHTML = quests.map(q => {
+                    const isLocked = q.is_locked == 1;
+                    const btnText = isLocked ? 'Locked' : 'Start';
+                    const lockedClass = isLocked ? 'locked' : '';
+                    const clickEvent = isLocked ? '' : `onclick="startQuest(${q.id})"`;
+
+                    return `
+                    <div class="q-card ${lockedClass}">
+                        <div class="q-inner">
+                            <h2 class="q-title">${q.title}</h2>
+                            <p class="q-desc">${q.description}</p>
+                            <p class="q-count">${q.target_count} soal</p>
+                            <button class="btn-start" ${clickEvent}>${btnText}</button>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            } else {
+                container.innerHTML = '<p style="text-align:center;">Tidak ada quest.</p>';
+            }
+        }
+
+        // Di dalam quest.html -> script -> function startQuest(id)
+        function startQuest(id) {
+            // Redirect ke halaman quiz dengan membawa ID Quest
+            window.location.href = `quiz.html?id=${id}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadQuestData);
+    </script>
+    <script src="../js/navbar.js?v=20251216_bust"></script>
+</body>
+
+</html>

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Kelola Quest & Quiz - Chronos Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <style>
+        /* --- GLOBAL STYLES --- */
+        .badge-daily { background: #2e8b57; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; }
+        .badge-weekly { background: #cd853f; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; }
+        .badge-main { background: #8b0000; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; }
+        .locked-status { color: #888; font-style: italic; }
+        .open-status { color: #2e8b57; font-weight: bold; }
+
+        /* --- MODAL LAYOUT FIX (LEBIH RAPI) --- */
+        .modal-content {
+            background-color: #f6ecd6; /* Warna Kertas */
+            border: 4px double #5c4d3c; /* Bingkai Klasik */
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 850px; /* Lebih lebar agar muat */
+            width: 90%;
+            position: relative;
+            max-height: 90vh; /* Agar bisa discroll jika panjang */
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            font-family: 'Cinzel', serif;
+            color: #2b1d0e;
+            text-align: center;
+            border-bottom: 2px solid #cdbfae;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Form Styling */
+        .form-box {
+            background: #fff8f0;
+            border: 1px solid #d4c5a9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        .form-group { margin-bottom: 15px; }
+        
+        .form-group label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: 600; 
+            color: #4a3b2a; 
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Input Styling agar seragam */
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bdaea0;
+            border-radius: 4px;
+            background-color: #fff;
+            font-family: sans-serif;
+            font-size: 0.95rem;
+            box-sizing: border-box; /* Agar padding tidak melebarkan elemen */
+        }
+
+        .form-group textarea { resize: vertical; min-height: 80px; }
+
+        /* Grid Layout untuk Pilihan Jawaban (2 Kolom Rapi) */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 Kolom Seimbang */
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* Tombol Simpan */
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to bottom, #2e8b57, #246b43);
+            color: white;
+            border: 1px solid #1e5c39;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .btn-submit:hover { background: #246b43; transform: translateY(-1px); }
+
+        /* --- LIST SOAL FIX --- */
+        #quizListContainer {
+            margin-top: 20px;
+            border-top: 2px dashed #cdbfae;
+            padding-top: 20px;
+            
+            /* PAKSA TAMPILAN KE BAWAH */
+            display: flex;
+            flex-direction: column; 
+            gap: 10px;
+            width: 100%;
+        }
+
+        .quiz-list-item {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            
+            /* PASTIKAN LEBAR PENUH */
+            width: 100%; 
+            box-sizing: border-box;
+        }
+        
+        /* Cegah teks panjang merusak layout */
+        .quiz-content {
+            flex: 1;
+            padding-right: 15px;
+            word-break: break-word; /* Penting jika ada link panjang */
+        }
+
+        .question-text {
+            font-weight: bold;
+            color: #222;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .quiz-meta {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* Tombol Aksi di Kanan */
+        .quiz-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0; /* Jangan mengecil */
+        }
+
+        .btn-mini {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-edit { background-color: #2e8b57; color: white; }
+        .btn-delete { background-color: #d9534f; color: white; }
+        .btn-edit:hover { background-color: #246b43; }
+        .btn-delete:hover { background-color: #c9302c; }
+
+    </style>
+</head>
+<body class="admin-page">
+
+    <div class="sidebar">
+        <div class="sidebar-header"><h2>Chronos<br>Control</h2></div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">🏠 Dashboard</a></li>
+            <li><a href="manage_materi.html">📚 Kelola Materi</a></li>
+            <li class="active"><a href="manage_quest.html">⚔️ Kelola Quest</a></li>
+            <li><a href="manage_users.html">👥 Data Siswa</a></li>
+            <li><a href="#" onclick="sessionStorage.clear(); window.location.href='../login.html'">🚪 Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h1>Manajemen Quest</h1>
+            <div class="admin-info">Admin Mode</div>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn-add" onclick="openQuestModal()">+ Buat Quest Baru</button>
+        </div>
+
+        <div class="panel-table">
+            <table class="steampunk-table">
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Judul</th><th>Tipe</th><th>Soal</th><th>Reward</th><th>Status</th><th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="questTableBody">
+                    <tr><td colspan="7" align="center">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="questModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('questModal')">&times;</span>
+            <h2 id="modalTitle" style="text-align:center;">Input Quest</h2>
+            <form id="questForm" onsubmit="submitQuest(event)">
+                <input type="hidden" id="questId">
+                <div class="form-group"><label>Judul Quest</label><input type="text" id="title" required></div>
+                <div class="form-group"><label>Tipe</label>
+                    <select id="type">
+                        <option value="Daily">Daily</option><option value="Weekly">Weekly</option><option value="Main">Main</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Target (Jumlah Soal)</label><input type="number" id="target" value="5" readonly style="background:#eee;"></div>
+                    <div class="form-group"><label>Reward (Poin)</label><input type="number" id="reward" value="100"></div>
+                </div>
+                <div class="form-group"><label>Status</label>
+                    <select id="is_locked"><option value="0">Terbuka</option><option value="1">Terkunci</option></select>
+                </div>
+                <div class="form-group"><label>Deskripsi</label><textarea id="desc" rows="3"></textarea></div>
+                <button type="submit" class="btn-submit">SIMPAN QUEST</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="quizModal" class="modal" style="z-index: 1001;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('quizModal')">&times;</span>
+            <h2>Kelola Soal: <span id="quizQuestTitle" style="color:#8b0000;"></span></h2>
+            
+            <div class="form-box">
+                <form id="quizForm" onsubmit="submitQuiz(event)">
+                    <input type="hidden" id="quizQuestId">
+                    <input type="hidden" id="quizId">
+                    
+                    <div class="form-group">
+                        <label>Pertanyaan</label>
+                        <textarea id="qText" rows="3" required placeholder="Tulis pertanyaan soal di sini..."></textarea>
+                    </div>
+                    
+                    <div class="options-grid">
+                        <div class="form-group">
+                            <label>Pilihan A</label>
+                            <input type="text" id="optA" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pilihan B</label>
+                            <input type="text" id="optB" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pilihan C</label>
+                            <input type="text" id="optC" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pilihan D</label>
+                            <input type="text" id="optD" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Jawaban Benar</label>
+                        <select id="correctOpt">
+                            <option value="a">A</option>
+                            <option value="b">B</option>
+                            <option value="c">C</option>
+                            <option value="d">D</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-submit">+ SIMPAN SOAL</button>
+                </form>
+            </div>
+
+            <h3 style="border-bottom: 1px solid #ccc; padding-bottom:5px; margin-bottom:15px; font-family:'Playfair Display', serif;">Daftar Soal Tersimpan</h3>
+            <div id="quizListContainer">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        let allQuests = [];
+        let currentQuizList = [];
+
+        document.addEventListener('DOMContentLoaded', loadQuests);
+
+        // --- 1. QUEST MANAGEMENT ---
+        async function loadQuests() {
+            try {
+                const res = await fetch('../php/admin_quest.php');
+                const result = await res.json();
+                if(result.success) {
+                    allQuests = result.data;
+                    renderQuestTable(result.data);
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        function renderQuestTable(data) {
+            const tbody = document.getElementById('questTableBody');
+            if(data.length > 0) {
+                tbody.innerHTML = data.map((item, idx) => `
+                    <tr>
+                        <td>#${item.id}</td>
+                        <td style="font-weight:bold;">${item.title}</td>
+                        <td>${item.type}</td>
+                        <td>${item.target_count}</td>
+                        <td style="color:#d4af37;">+${item.reward_points}</td>
+                        <td>${item.is_locked == 1 ? '🔒' : '🔓'}</td>
+                        <td>
+                            <button class="btn-small" onclick="openQuizModal(${item.id})">📝 Soal</button>
+                            <button class="btn-small" style="background:#2e8b57;" onclick="openEditQuest(${idx})">Edit</button>
+                            <button class="btn-small btn-delete" onclick="deleteQuest(${item.id})">Hapus</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="7" align="center">Belum ada quest.</td></tr>';
+            }
+        }
+
+        async function submitQuest(e) {
+            e.preventDefault();
+            const payload = {
+                id: document.getElementById('questId').value,
+                title: document.getElementById('title').value,
+                type: document.getElementById('type').value,
+                target_count: document.getElementById('target').value, // Opsional, krn nanti diupdate otomatis by soal
+                reward_points: document.getElementById('reward').value,
+                is_locked: document.getElementById('is_locked').value,
+                description: document.getElementById('desc').value
+            };
+            
+            await fetch('../php/admin_quest.php', {
+                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
+            });
+            closeModal('questModal');
+            loadQuests();
+        }
+
+        async function deleteQuest(id) {
+            if(confirm("Hapus quest ini? Semua soal di dalamnya juga akan terhapus.")) {
+                await fetch('../php/admin_quest.php', {
+                    method: 'POST', body: JSON.stringify({action:'delete', id:id})
+                });
+                loadQuests();
+            }
+        }
+
+        // --- 2. QUIZ MANAGEMENT ---
+        async function openQuizModal(questId) {
+            document.getElementById('quizQuestId').value = questId;
+            document.getElementById('quizModal').style.display = 'flex';
+            loadQuizQuestions(questId);
+        }
+
+        async function loadQuizQuestions(questId) {
+            try {
+                const res = await fetch(`../php/admin_quiz.php?quest_id=${questId}`);
+                const result = await res.json();
+                
+                if(result.success) {
+                    document.getElementById('quizQuestTitle').innerText = result.quest_title;
+                    currentQuizList = result.data;
+                    renderQuizList();
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        // --- TAMBAHKAN FUNGSI INI (HELPER UNTUK MENCEGAH HTML TAG) ---
+        function escapeHtml(text) {
+            if (text == null) return "";
+            return text
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // --- UPDATE FUNGSI RENDER INI ---
+        function renderQuizList() {
+            const container = document.getElementById('quizListContainer');
+            
+            if(currentQuizList.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666; font-style:italic; padding:20px;">Belum ada soal untuk quest ini.</p>';
+                return;
+            }
+            
+            container.innerHTML = currentQuizList.map((q, idx) => `
+                <div class="quiz-list-item">
+                    <div class="quiz-content">
+                        <span class="question-text">${idx+1}. ${escapeHtml(q.question_text)}</span>
+                        <div class="quiz-meta">
+                            A: ${escapeHtml(q.option_a)} | B: ${escapeHtml(q.option_b)}<br>
+                            C: ${escapeHtml(q.option_c)} | D: ${escapeHtml(q.option_d)}<br>
+                            <strong>Kunci Jawaban: ${escapeHtml(q.correct_option).toUpperCase()}</strong>
+                        </div>
+                    </div>
+                    <div class="quiz-actions">
+                        <button class="btn-mini btn-edit" onclick="editQuiz(${idx})">Edit</button>
+                        <button class="btn-mini btn-delete" onclick="deleteQuiz(${q.id})">Hapus</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function submitQuiz(e) {
+            e.preventDefault();
+            const payload = {
+                id: document.getElementById('quizId').value,
+                quest_id: document.getElementById('quizQuestId').value,
+                question_text: document.getElementById('qText').value,
+                option_a: document.getElementById('optA').value,
+                option_b: document.getElementById('optB').value,
+                option_c: document.getElementById('optC').value,
+                option_d: document.getElementById('optD').value,
+                correct_option: document.getElementById('correctOpt').value
+            };
+
+            await fetch('../php/admin_quiz.php', {
+                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
+            });
+            
+            // Reset Form Quiz (kecuali quest_id)
+            document.getElementById('quizId').value = "";
+            document.getElementById('qText').value = "";
+            document.getElementById('optA').value = ""; document.getElementById('optB').value = "";
+            document.getElementById('optC').value = ""; document.getElementById('optD').value = "";
+            
+            loadQuizQuestions(payload.quest_id); // Reload list soal
+            loadQuests(); // Reload quest list (buat update jumlah target)
+        }
+
+        function editQuiz(idx) {
+            const q = currentQuizList[idx];
+            document.getElementById('quizId').value = q.id;
+            document.getElementById('qText').value = q.question_text;
+            document.getElementById('optA').value = q.option_a;
+            document.getElementById('optB').value = q.option_b;
+            document.getElementById('optC').value = q.option_c;
+            document.getElementById('optD').value = q.option_d;
+            document.getElementById('correctOpt').value = q.correct_option;
+        }
+
+        async function deleteQuiz(id) {
+            if(confirm("Hapus soal ini?")) {
+                const questId = document.getElementById('quizQuestId').value;
+                await fetch('../php/admin_quiz.php', {
+                    method: 'POST', body: JSON.stringify({action:'delete', id:id})
+                });
+                loadQuizQuestions(questId);
+            }
+        }
+
+        // --- HELPER ---
+        function openQuestModal() {
+            document.getElementById('questForm').reset();
+            document.getElementById('questId').value = "";
+            document.getElementById('modalTitle').innerText = "Buat Quest Baru";
+            document.getElementById('questModal').style.display = 'flex';
+        }
+
+        function openEditQuest(idx) {
+            const item = allQuests[idx];
+            document.getElementById('questId').value = item.id;
+            document.getElementById('title').value = item.title;
+            document.getElementById('type').value = item.type;
+            document.getElementById('target').value = item.target_count;
+            document.getElementById('reward').value = item.reward_points;
+            document.getElementById('is_locked').value = item.is_locked;
+            document.getElementById('desc').value = item.description;
+            document.getElementById('questModal').style.display = 'flex';
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    </script>
+</body>
+</html>
